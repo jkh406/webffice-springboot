@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.anbtech.webffice.mapper.ScheduleMapper">
+
+    <select id="selectBoardList" resultType="com.anbtech.webffice.vo.ScheduleVO"
+     parameterType= "com.anbtech.webffice.vo.ScheduleVO">
+        SELECT *
+          FROM SCHEDULE_BOARD
+         WHERE REGISTER_ID = #{id}
+    </select>
+
+    <insert id="insert">
+        INSERT INTO DEMO_TABLE(
+            DEMO_ID
+            ,DEMO_NAME
+        ) VALUES(
+            #{demo_id}
+            ,#{demo_name}
+        )
+    </insert>
+</mapper>
