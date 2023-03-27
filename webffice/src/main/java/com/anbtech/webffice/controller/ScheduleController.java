@@ -4,8 +4,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,15 +25,20 @@ public class ScheduleController {
     
     @GetMapping("/{id}")
     public List<ScheduleVO> getSelectList(@PathVariable String id){ 
-    	System.out.println(scheduleService.selectBoardList(id));
-    	System.out.println("Scheduel Board List 출력 성공 " + id); 
-    	return scheduleService.selectBoardList(id);
+    	System.out.println("Scheduel List 출력 성공 " + id); 
+    	return scheduleService.selectScheduleList(id);
 	}
     
-    @GetMapping("insert")
-    public void insertDemoVo(){
-    	ScheduleVO vo = new ScheduleVO();
-    	
-        scheduleService.insert(vo);
+    @PostMapping
+    public void insertSchedule(@RequestBody ScheduleVO schedule){
+        scheduleService.insertSchedule(schedule);
+    	System.out.println("Schedule DB 저장 성공 "); 
+    }
+    
+    @DeleteMapping("/{id}")
+    public void deleteSchedule(@PathVariable String id) {
+    	System.out.println("Schedule DB 삭제  " + id); 
+    	scheduleService.deleteSchedule(id);
+    	System.out.println("Schedule DB 삭제 성공 "); 
     }
 }

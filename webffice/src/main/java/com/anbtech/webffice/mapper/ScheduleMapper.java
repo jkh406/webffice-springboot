@@ -8,7 +8,8 @@ import com.anbtech.webffice.vo.ScheduleVO;
 @Mapper
 public interface ScheduleMapper {
 	
-    List<ScheduleVO> selectBoardList(String id);
-    void insert(ScheduleVO vo);
+    List<ScheduleVO> selectScheduleList(String id);
+    void insertSchedule(ScheduleVO vo);
+    void deleteSchedule(String id);
     
 }

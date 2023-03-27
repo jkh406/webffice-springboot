@@ -14,11 +14,15 @@ public class ScheduleService {
     @Autowired
     private ScheduleMapper scheduleMapper;
 
-    public List<ScheduleVO> selectBoardList(String id){ 
-    	return scheduleMapper.selectBoardList(id); 
+    public List<ScheduleVO> selectScheduleList(String id){ 
+    	return scheduleMapper.selectScheduleList(id); 
 	}
     
-    public void insert(ScheduleVO vo){
-    	scheduleMapper.insert(vo);
+    public void insertSchedule(ScheduleVO vo){
+    	scheduleMapper.insertSchedule(vo);
+	}
+    
+    public void deleteSchedule(String id){
+    	scheduleMapper.deleteSchedule(id);
 	}
 }

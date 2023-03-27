@@ -9,6 +9,7 @@ public class ScheduleVO {
     public String start_date;
     public String end_date;
     public String register_id;
+    public String chk_allday;
 
 }
 
