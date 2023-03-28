@@ -1,10 +1,7 @@
-package com.anbtech.webffice.service;
+package com.anbtech.webffice.domain.schedule;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.anbtech.webffice.vo.ScheduleVO;
-import com.anbtech.webffice.mapper.ScheduleMapper;
 
 import java.util.List;
 

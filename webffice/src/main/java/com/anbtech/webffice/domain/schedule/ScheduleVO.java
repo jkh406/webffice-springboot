@@ -1,4 +1,4 @@
-package com.anbtech.webffice.vo;
+package com.anbtech.webffice.domain.schedule;
 import lombok.Data;
 
 @Data

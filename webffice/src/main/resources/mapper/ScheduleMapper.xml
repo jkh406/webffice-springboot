@@ -5,14 +5,14 @@
 
 <mapper namespace="com.anbtech.webffice.mapper.ScheduleMapper">
 
-    <select id="selectScheduleList" resultType="com.anbtech.webffice.vo.ScheduleVO"
-     parameterType= "com.anbtech.webffice.vo.ScheduleVO">
+    <select id="selectScheduleList" resultType="com.anbtech.webffice.domain.schedule.ScheduleVO"
+     parameterType= "com.anbtech.webffice.domain.schedule.ScheduleVO">
         SELECT *
           FROM SCHEDULE_BOARD
          WHERE REGISTER_ID = #{id}
     </select>
 
-    <insert id="insertSchedule" parameterType= "com.anbtech.webffice.vo.ScheduleVO">
+    <insert id="insertSchedule" parameterType= "com.anbtech.webffice.domain.schedule.ScheduleVO">
     	INSERT INTO sys.schedule_board
 		( board_id
 		, board_title
@@ -32,7 +32,7 @@
 		)
     </insert>
     
-    <delete id="ideleteSchedule" parameterType= "String">
+    <delete id="deleteSchedule" parameterType= "String">
     	DELETE FROM sys.schedule_board
 		 WHERE board_id=#{id}
     </delete>

@@ -1,9 +1,8 @@
-package com.anbtech.webffice.mapper;
+package com.anbtech.webffice.domain.schedule;
 
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
-import com.anbtech.webffice.vo.ScheduleVO;
 
 @Mapper
 public interface ScheduleMapper {
