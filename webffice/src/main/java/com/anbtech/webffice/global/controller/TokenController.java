@@ -7,11 +7,8 @@ import java.util.List;
 
 import javax.servlet.http.Cookie;
 
-import com.anbtech.webffice.global.DTO.response.SingleDataResponse;
-import com.anbtech.webffice.global.jwt.TokenProvider;
-import com.anbtech.webffice.global.service.ResponseService;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +19,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.anbtech.webffice.global.DTO.response.SingleDataResponse;
+import com.anbtech.webffice.global.jwt.TokenProvider;
+import com.anbtech.webffice.global.service.ResponseService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/token")
+@RequestMapping("/api/token")
 public class TokenController {
     
     @Autowired

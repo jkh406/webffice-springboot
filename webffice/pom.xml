@@ -79,7 +79,6 @@
 		<dependency>
 		    <groupId>org.springframework.security</groupId>
 		    <artifactId>spring-security-web</artifactId>
-		    <version>6.0.2</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-test -->
@@ -95,26 +94,12 @@
 		    <artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		
-		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
-		<dependency>
-		    <groupId>io.jsonwebtoken</groupId>
-		    <artifactId>jjwt</artifactId>
-		    <version>0.9.1</version>
-		</dependency>
 		
 		<dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-impl</artifactId>
             <version>0.11.2</version>
         </dependency>
-
-		<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
-		<dependency>
-		    <groupId>javax.servlet</groupId>
-		    <artifactId>javax.servlet-api</artifactId>
-		    <version>4.0.1</version>
-		    <scope>provided</scope>
-		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api -->
 		<dependency>
@@ -137,7 +122,15 @@
 		    <artifactId>java-jwt</artifactId>
 		    <version>4.3.0</version>
 		</dependency>
-		
+
+		<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+		<dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>javax.servlet-api</artifactId>
+		    <version>4.0.1</version>
+		    <scope>provided</scope>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/javax.persistence/javax.persistence-api -->
 		<dependency>
 		    <groupId>javax.persistence</groupId>

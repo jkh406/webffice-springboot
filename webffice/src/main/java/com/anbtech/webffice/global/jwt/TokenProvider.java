@@ -4,7 +4,6 @@ import java.security.Key;
 import java.util.Date;
 import java.util.List;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -23,6 +22,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
+
 import io.jsonwebtoken.security.Keys;
 
 @Component
@@ -53,9 +53,11 @@ public class TokenProvider implements InitializingBean{
 
 
     @Override
-    public void afterPropertiesSet() {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
-        this.key = Keys.hmacShaKeyFor(keyBytes);
+    public void afterPropertiesSet() throws Exception {
+    	byte[] keyBytes = Decoders.BASE64.decode(secret);
+        key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+      
+    	logger.info("secret hmacShaKeyFor" + key);
     }
 
     /**
@@ -64,7 +66,8 @@ public class TokenProvider implements InitializingBean{
      * @param roles 발급받는 유저의 권한
      * @return 발급받은 토큰을 리턴해줌
      */
-    public String createAcessToken(String userId, List<String> roles) {
+    @SuppressWarnings("deprecation")
+	public String createAcessToken(String userId, List<String> roles) {
         Claims claims = Jwts.claims().setSubject(userId);
         claims.put("roles", roles);
         // 토큰 만료기간
@@ -75,7 +78,7 @@ public class TokenProvider implements InitializingBean{
                 .setClaims(claims)
                 .setIssuedAt(now) //토큰 발행 시간정보
                 .setExpiration(validity) // 토큰 만료일 설정
-                .signWith(SignatureAlgorithm.HS512, key) // 암호화
+                .signWith(key, SignatureAlgorithm.HS512) // 암호화
                 .compact();
     }
     
@@ -96,7 +99,7 @@ public class TokenProvider implements InitializingBean{
                 .setClaims(claims)
                 .setIssuedAt(now) //토큰 발행 시간정보
                 .setExpiration(validity) // 토큰 만료일 설정
-                .signWith(SignatureAlgorithm.HS512, key) // 암호화
+                .signWith(key, SignatureAlgorithm.HS512) // 암호화
                 .compact();
     }
     
@@ -111,8 +114,9 @@ public class TokenProvider implements InitializingBean{
     }
     // // 유저 이름 추출
     public String getUserId(String token) {
-        return Jwts.parser()
+        return Jwts.parserBuilder()
                 .setSigningKey(key)
+                .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
@@ -127,18 +131,21 @@ public class TokenProvider implements InitializingBean{
         }
         return null;
     }
+    
     /**
      * 토큰을 파싱하고 발생하는 예외를 처리, 문제가 있을경우 false 반환
      */
     public boolean validateToken(String token) {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token);
-            return !claims.getBody().getExpiration().before(new Date());
+        Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+        return !claims.getBody().getExpiration().before(new Date());
      }
+    
      private Claims parseClaims(String accessToken) {
         try {
-            return Jwts.parser().setSigningKey(key).parseClaimsJws(accessToken).getBody();
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
     }
+     
 }

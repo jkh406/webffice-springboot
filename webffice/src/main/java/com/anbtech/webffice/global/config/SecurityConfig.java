@@ -1,5 +1,7 @@
 package com.anbtech.webffice.global.config;
 
+import java.util.Arrays;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -53,16 +55,17 @@ public class SecurityConfig {
             .requestMatchers("/api/v1/login").permitAll()
             .requestMatchers("/api/v1/join").hasRole("USER")
         	.requestMatchers("/**");
-        http.formLogin();
-        http.csrf().disable();
-        http.exceptionHandling();
-		http.httpBasic().disable();
-		http.sessionManagement()
-		 	.sessionCreationPolicy(SessionCreationPolicy.STATELESS);  // jwt token으로 인증하므로 stateless 하도록 처리.
-		http.addFilterBefore((Filter) corsFilter, UsernamePasswordAuthenticationFilter.class);
-		http.httpBasic().authenticationEntryPoint(jwtAuthenticationEntryPoint);
-		http.apply(new JwtSecurityConfig(tokenProvider));
-		http.exceptionHandling().accessDeniedHandler(jwtAccessDeniedHandler);
+//        http.formLogin();
+//        http.csrf().disable();
+//        http.exceptionHandling();
+//		http.httpBasic().disable();
+//		http.sessionManagement()
+//		 	.sessionCreationPolicy(SessionCreationPolicy.STATELESS);  // jwt token으로 인증하므로 stateless 하도록 처리.
+//		http.addFilterBefore((Filter) corsFilter, UsernamePasswordAuthenticationFilter.class);
+//		http.httpBasic().authenticationEntryPoint(jwtAuthenticationEntryPoint);
+//		http.apply(new JwtSecurityConfig(tokenProvider));
+//		http.exceptionHandling().accessDeniedHandler(jwtAccessDeniedHandler);
+		http.cors().configurationSource(corsConfigurationSource());
 		    
       
       return http.build();
@@ -75,6 +78,9 @@ public class SecurityConfig {
         configuration.addAllowedOrigin("*");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
+//        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+//        configuration.setAllowedMethods(Arrays.asList("HEAD","POST","GET","DELETE","PUT"));
+//        configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
