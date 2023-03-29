@@ -1,9 +1,6 @@
 package com.anbtech.webffice.global.jwt;
 
 import java.io.IOException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +17,9 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.SecurityException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -32,10 +32,10 @@ public class JwtFilter extends GenericFilterBean{
 
     private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
 
-    private TokenProvider tokenProvider;
+    private JwtTokenProvider jwtTokenProvider;
 
-    public JwtFilter(TokenProvider tokenProvider) {
-        this.tokenProvider = tokenProvider;
+    public JwtFilter(JwtTokenProvider tokenProvider) {
+        this.jwtTokenProvider = tokenProvider;
     }
 
     /**
@@ -72,9 +72,9 @@ public class JwtFilter extends GenericFilterBean{
             }
         }
         if (requestURI.equals("/api/v1/token/getAccessToken")) {
-            useToken = tokenProvider.resolveToken(refreshToken);
+            useToken = jwtTokenProvider.resolveToken(refreshToken);
             try {
-                if (StringUtils.hasText(refreshToken) && tokenProvider.validateToken(useToken)){
+                if (StringUtils.hasText(refreshToken) && jwtTokenProvider.validateToken(useToken)){
                 	chain.doFilter(request, response);
                     return;
                 }
@@ -83,12 +83,12 @@ public class JwtFilter extends GenericFilterBean{
             }
         }
         else {//if (requestURI != "/api/v1/token/getAccessToken") {
-            useToken = tokenProvider.resolveToken(httpServletRequest.getHeader("Authorization"));
+            useToken = jwtTokenProvider.resolveToken(httpServletRequest.getHeader("Authorization"));
         }
 
         try {
-            if (StringUtils.hasText(useToken) && tokenProvider.validateToken(useToken)) {
-                Authentication authentication = tokenProvider.getAuthentication(useToken);
+            if (StringUtils.hasText(useToken) && jwtTokenProvider.validateToken(useToken)) {
+                Authentication authentication = jwtTokenProvider.getAuthentication(useToken);
                 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 logger.debug("Security Contextx에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);

@@ -17,7 +17,7 @@ import com.anbtech.webffice.domain.user.dto.TokenDTO;
 import com.anbtech.webffice.domain.user.dto.UserDTO;
 import com.anbtech.webffice.global.exception.DuplicatedUsernameException;
 import com.anbtech.webffice.global.exception.LoginFailedException;
-import com.anbtech.webffice.global.jwt.TokenProvider;
+import com.anbtech.webffice.global.jwt.JwtTokenProvider;
 
 @Service
 @Transactional(readOnly = true)
@@ -25,7 +25,7 @@ import com.anbtech.webffice.global.jwt.TokenProvider;
 public class UserService{
     // 암호화 위한 엔코더
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-//    private final TokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     // 회원가입 시 저장시간을 넣어줄 DateTime형
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:sss");
@@ -113,8 +113,8 @@ public class UserService{
         .orElseThrow(() -> new LoginFailedException("잘못된 아이디입니다"));
 
         return TokenDTO.builder()
-//        .accessToken("Bearer" + jwtTokenProvider.createAcessToken(userDto.getUserId(), Collections.singletonList(userDto.getUserRole())))
-//        .refreshToken("Bearer" + jwtTokenProvider.createRefreshToken(userDto.getUserId(), Collections.singletonList(userDto.getUserRole())))
+        .accessToken("Bearer" + jwtTokenProvider.createAcessToken(userDto.getUserId(), Collections.singletonList(userDto.getUserRole())))
+        .refreshToken("Bearer" + jwtTokenProvider.createRefreshToken(userDto.getUserId(), Collections.singletonList(userDto.getUserRole())))
         .build();
     }
 

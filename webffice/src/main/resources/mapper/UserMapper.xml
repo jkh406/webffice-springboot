@@ -5,7 +5,7 @@
  
 <mapper namespace="com.anbtech.webffice.domain.user.UserMapper">
     <insert id="join" parameterType="com.anbtech.webffice.domain.user.dto.UserDTO">
-      INSERT INTO user_TB
+      INSERT INTO sys.user_TB
       (user_ID, user_PW, user_role, create_date, update_date)
       VALUES(#{userId}, #{userPw}, #{userRole}, #{createDate}, #{updateDate});
     </insert>
@@ -21,13 +21,13 @@
 
     <select id="findUser" resultType="com.anbtech.webffice.domain.user.dto.UserDTO">
       SELECT user_ID, user_PW, user_role
-      FROM user_TB
+      FROM sys.user_TB
       WHERE user_ID = #{userID}
     </select>
 
     <select id="findUserId" resultType="com.anbtech.webffice.domain.user.dto.UserDTO">
       SELECT user_PK 
-      FROM user_TB
+      FROM sys.user_TB
       WHERE user_ID = #{userId};
     </select>
 </mapper>

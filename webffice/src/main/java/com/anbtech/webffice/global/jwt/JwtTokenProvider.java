@@ -22,42 +22,34 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
-
 import io.jsonwebtoken.security.Keys;
 
 @Component
-public class TokenProvider implements InitializingBean{
+public class JwtTokenProvider implements InitializingBean{
 
-    private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
+    private final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
 
     private static final String AUTHORITIES_KEY = "auth";
-    private final long accessTokenValidityInMilliseconds;
-    private final long refreshTokenValidityInMilliseconds;
+    private final long accessTokenValidityInMilliseconds = 30 * 60 * 1000L;
+    private final long refreshTokenValidityInMilliseconds = 7 * 24 * 60 * 60 * 1000L;
     private final String secret;
     private Key key;
-
 
     @Autowired
     UserDetailsService userDetailsService;
 
 
-    public TokenProvider(
-        @Value("${jwt.secret}") String secret,
-        @Value("${jwt.access-token-validity-in-seconds}") long accessTokenValidityInSeconds,
-        @Value("${jwt.refresh-token-validity-in-seconds}") long refreshTokenValidityInSeconds
+    public JwtTokenProvider(
+        @Value("${jwt.secret}") String secret
     ){
         this.secret = secret;
-        this.accessTokenValidityInMilliseconds = accessTokenValidityInSeconds * 1000;
-        this.refreshTokenValidityInMilliseconds = refreshTokenValidityInSeconds * 1000;
     }
 
 
     @Override
-    public void afterPropertiesSet() throws Exception {
-    	byte[] keyBytes = Decoders.BASE64.decode(secret);
-        key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
-      
-    	logger.info("secret hmacShaKeyFor" + key);
+    public void afterPropertiesSet() {
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
     /**
@@ -66,8 +58,7 @@ public class TokenProvider implements InitializingBean{
      * @param roles 발급받는 유저의 권한
      * @return 발급받은 토큰을 리턴해줌
      */
-    @SuppressWarnings("deprecation")
-	public String createAcessToken(String userId, List<String> roles) {
+    public String createAcessToken(String userId, List<String> roles) {
         Claims claims = Jwts.claims().setSubject(userId);
         claims.put("roles", roles);
         // 토큰 만료기간
@@ -131,15 +122,14 @@ public class TokenProvider implements InitializingBean{
         }
         return null;
     }
-    
     /**
      * 토큰을 파싱하고 발생하는 예외를 처리, 문제가 있을경우 false 반환
      */
     public boolean validateToken(String token) {
-        Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-        return !claims.getBody().getExpiration().before(new Date());
+        // try {
+            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            return !claims.getBody().getExpiration().before(new Date());
      }
-    
      private Claims parseClaims(String accessToken) {
         try {
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
@@ -147,5 +137,4 @@ public class TokenProvider implements InitializingBean{
             return e.getClaims();
         }
     }
-     
 }

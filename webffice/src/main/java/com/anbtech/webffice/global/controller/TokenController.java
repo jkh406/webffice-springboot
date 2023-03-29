@@ -5,10 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.servlet.http.Cookie;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,22 +17,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.anbtech.webffice.global.DTO.response.SingleDataResponse;
-import com.anbtech.webffice.global.jwt.TokenProvider;
+import com.anbtech.webffice.global.jwt.JwtTokenProvider;
 import com.anbtech.webffice.global.service.ResponseService;
 
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/token")
+@RequestMapping("/api/v1/token")
 public class TokenController {
     
     @Autowired
     ResponseService responseService;
     @Autowired
-    TokenProvider tokenProvider;
+    JwtTokenProvider tokenProvider;
 
     @PostMapping(value = "/getAccessToken")
     public ResponseEntity issueToken(
@@ -45,15 +43,16 @@ public class TokenController {
         ResponseEntity responseEntity = null;
         try{
             String refreshToken = tokenProvider.resolveToken(refreshCookie.getValue());
-            // String oldAccessToken = tokenProvider.resolveToken(accessTokenRequest);
 
             // 유저 권한 저장 들어있는 컬렉션
             Collection<? extends GrantedAuthority> accessTokenAuthoriryCollection = tokenProvider.getAuthentication(refreshToken).getAuthorities();
+            
             // 유저 권한 저장 위한 리스트
             List<String> accessTokenAuthorities = new ArrayList<String>(accessTokenAuthoriryCollection.size());
 
             String accessTokenUserId = tokenProvider.getUserId(refreshToken);
             String newAccessToken = null;
+            
             // 리프레시 토큰이 유효하다면
             if (StringUtils.hasText(refreshToken) && tokenProvider.validateToken(refreshToken)) {
                 for (GrantedAuthority x : accessTokenAuthoriryCollection) {
