@@ -1,5 +1,4 @@
 package com.anbtech.webffice.global.jwt;
-
 import java.io.IOException;
 
 import org.slf4j.Logger;
@@ -17,6 +16,10 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.SecurityException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,63 +29,82 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * GenericFillterBean을 Extends에서 doFilter Override, 
  * 실제 실터링 로직은 doFilter 내부에 작성
+ * Jwt의 인증정보를 SecurityContext에 저장하는 역할을 합니다.
+ * JwtFilter의 doFilter 메소드에서 Reqeust가 들어올 때 SecurityContext에 Authentication 객체를 저장해 사용하게 됩니다.
  */
 @Slf4j
 public class JwtFilter extends GenericFilterBean{
 
     private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
-
     private JwtTokenProvider jwtTokenProvider;
 
-    public JwtFilter(JwtTokenProvider tokenProvider) {
-        this.jwtTokenProvider = tokenProvider;
+    public JwtFilter(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
     }
+
 
     /**
      * jwt 토큰의 인증정보를 SecurityContext에 저장하는 역할 수행
      */
     @Override
-    public void doFilter(jakarta.servlet.ServletRequest request, jakarta.servlet.ServletResponse response,
-			jakarta.servlet.FilterChain chain) throws IOException, jakarta.servlet.ServletException{
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
+        throws IOException, ServletException {
 
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         String requestURI = httpServletRequest.getRequestURI();
 
-        // 아래 uri로 접근시 토큰이 필요하지 않으므로 바로 접근시킴.
-        if (requestURI.equals("/api/v1/login") 
-        || requestURI.equals("/api/v1/logout") 
-        || requestURI.equals("/api/v1/join") 
-        || requestURI.equals("/api/v1/get")
-        || requestURI.equals("/api/v1/board/readBoardLists")
-        || requestURI.equals("/api/v1/board/getBoardListLimit")
-        || requestURI.equals("/api/v1/board/getBoard")
-        ){
-        	chain.doFilter(request, response);
-            return;
-        }
+//        // 아래 URL로 접근시 토큰이 필요하지 않으므로 바로 접근시킴.
+//        if (requestURI.equals("/api/v1/login") 
+//        || requestURI.equals("/api/v1/logout") 
+//        || requestURI.equals("/api/v1/join") 
+//        || requestURI.equals("/api/v1/get")
+//        || requestURI.equals("/api/v1/token/getAccessToken")
+//        || requestURI.equals("/api/v1/board/readBoardLists")
+//        || requestURI.equals("/api/v1/board/getBoardListLimit")
+//        || requestURI.equals("/api/v1/board/getBoard")
+//        || requestURI.equals("/")
+//        || requestURI.equals("/schedule")
+//        ){
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
 
         Cookie[] cookies = httpServletRequest.getCookies();
         String refreshToken = null;
         String useToken = null;
+        log.info("cookies ="+ cookies);
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals(HttpHeaders.SET_COOKIE)) {
                 refreshToken = cookie.getValue();
             }
         }
+
+        Cookie cookie = new Cookie("Authorization","Bearertest01");
+        cookie.setMaxAge(24 * 60 * 60); // 쿠키의 만료 시간을 24시간으로 설정
+
+        // optional properties
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        refreshToken = cookie.getValue();
+        httpServletResponse.addCookie(cookie);
+        
         if (requestURI.equals("/api/v1/token/getAccessToken")) {
             useToken = jwtTokenProvider.resolveToken(refreshToken);
+            log.info("refreshToken ="+ refreshToken);
+            log.info("useToken ="+ useToken);
             try {
                 if (StringUtils.hasText(refreshToken) && jwtTokenProvider.validateToken(useToken)){
-                	chain.doFilter(request, response);
+                    filterChain.doFilter(request, response);
                     return;
                 }
             } catch (Exception e){
                 log.error(e.getMessage(), e);
             }
         }
-        else {//if (requestURI != "/api/v1/token/getAccessToken") {
+        else {
             useToken = jwtTokenProvider.resolveToken(httpServletRequest.getHeader("Authorization"));
         }
 
@@ -96,29 +118,25 @@ public class JwtFilter extends GenericFilterBean{
             }else {
                 logger.debug("유효한 JWT 토큰이 없습니다, uri:{}", requestURI);
             }
-            chain.doFilter(request, response);
-        // 잘못된 서명인 토큰일 경우
+            filterChain.doFilter(request, response);
+            
         } catch (SecurityException | MalformedJwtException e) {
             logger.info("잘못된 JWT 서명입니다.");
+            logger.info("useToken" + useToken);
             setErrorResponse(HttpStatus.UNAUTHORIZED,httpServletResponse, e);
-
-        // 만료된 토큰일 경우
         } catch (ExpiredJwtException e) {
             logger.info("만료된 JWT 토큰입니다.");
             setErrorResponse(HttpStatus.UNAUTHORIZED,httpServletResponse, e);
-        }
-        // 지원되지 않는 토큰일 경우
-        catch (UnsupportedJwtException e) {
+        } catch (UnsupportedJwtException e) {
             logger.info("지원되지 않는 JWT 토큰입니다.");
             setErrorResponse(HttpStatus.UNAUTHORIZED,httpServletResponse, e);
-
-        // 잘못된 토큰일 경우
         } catch (IllegalArgumentException e) {
             logger.info("JWT 토큰이 잘못되었습니다.");
             setErrorResponse(HttpStatus.UNAUTHORIZED,httpServletResponse, e);
         }
     }
         
+    
     public void setErrorResponse(HttpStatus status, HttpServletResponse response, Throwable ex) throws IOException {
         response.setStatus(status.value());
         response.setContentType("application/json; charset=UTF-8");
@@ -131,7 +149,6 @@ public class JwtFilter extends GenericFilterBean{
             responseJson.put("code", "Tk401");
             response.getWriter().print(responseJson);
         } catch (JSONException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

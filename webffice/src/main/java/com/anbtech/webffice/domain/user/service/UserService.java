@@ -45,9 +45,8 @@ public class UserService{
         // 가입된 유저인지 확인
         if (userMapper.findUserId(user.getUserId()).isPresent()) {
             System.out.println("!!!");
-            throw new DuplicatedUsernameException("이미 가입된 유저에요");
+            throw new DuplicatedUsernameException("이미 가입된 유저입니다.");
         }
-
         
         // 가입 안했으면 아래 진행
         UserDTO userVo = UserDTO.builder()
@@ -59,7 +58,6 @@ public class UserService{
         .build();
 
         userMapper.join(userVo);
-        // userMapper.addRole(userVo);
         
         return userMapper.findUserId(user.getUserId()).isPresent();
     }
@@ -70,7 +68,7 @@ public class UserService{
      */
     public String login (LoginDTO loginDTO) {
 
-        UserDTO userDto = userMapper.findUser(loginDTO.getUserId())//indUserByUsername(loginDto.getUsername())
+        UserDTO userDto = userMapper.findUser(loginDTO.getUserId())
                 .orElseThrow(() -> new LoginFailedException("잘못된 아이디입니다"));
         
         if (!passwordEncoder.matches(loginDTO.getUserPw(), userDto.getPassword())) {
@@ -78,8 +76,6 @@ public class UserService{
         }
 
         return userDto.getUserId();
-        // return loginDTO.getUserId();
-        // // return tokenGenerator(userDto);
     }
 
     /**
@@ -88,7 +84,6 @@ public class UserService{
      * @return 유저가 있다면: true, 유저가 없다면: false
      */
     public boolean haveUser(String userid) {
-        // IdDTO idDTO = IdDTO.builder().userId(userid).build();
         if (userMapper.findUserId(userid).isPresent()) {
             return true;
         }else {
@@ -109,7 +104,7 @@ public class UserService{
 
     public TokenDTO tokenGenerator(String userId) {
         
-        UserDTO userDto = userMapper.findUser(userId)//indUserByUsername(loginDto.getUsername())
+        UserDTO userDto = userMapper.findUser(userId)
         .orElseThrow(() -> new LoginFailedException("잘못된 아이디입니다"));
 
         return TokenDTO.builder()

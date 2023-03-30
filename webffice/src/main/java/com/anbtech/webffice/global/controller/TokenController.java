@@ -33,32 +33,32 @@ public class TokenController {
     @Autowired
     ResponseService responseService;
     @Autowired
-    JwtTokenProvider tokenProvider;
+    JwtTokenProvider jwtTokenProvider;
 
     @PostMapping(value = "/getAccessToken")
     public ResponseEntity issueToken(
-        // @RequestHeader(value = "Authorization") String accessTokenRequest,
         @CookieValue(value = HttpHeaders.SET_COOKIE) Cookie refreshCookie
      ) {
         ResponseEntity responseEntity = null;
         try{
-            String refreshToken = tokenProvider.resolveToken(refreshCookie.getValue());
+        	log.info("토큰 start" + refreshCookie);
+            String refreshToken = jwtTokenProvider.resolveToken(refreshCookie.getValue());
 
             // 유저 권한 저장 들어있는 컬렉션
-            Collection<? extends GrantedAuthority> accessTokenAuthoriryCollection = tokenProvider.getAuthentication(refreshToken).getAuthorities();
+            Collection<? extends GrantedAuthority> accessTokenAuthoriryCollection = jwtTokenProvider.getAuthentication(refreshToken).getAuthorities();
             
             // 유저 권한 저장 위한 리스트
             List<String> accessTokenAuthorities = new ArrayList<String>(accessTokenAuthoriryCollection.size());
 
-            String accessTokenUserId = tokenProvider.getUserId(refreshToken);
+            String accessTokenUserId = jwtTokenProvider.getUserId(refreshToken);
             String newAccessToken = null;
             
             // 리프레시 토큰이 유효하다면
-            if (StringUtils.hasText(refreshToken) && tokenProvider.validateToken(refreshToken)) {
+            if (StringUtils.hasText(refreshToken) && jwtTokenProvider.validateToken(refreshToken)) {
                 for (GrantedAuthority x : accessTokenAuthoriryCollection) {
                     accessTokenAuthorities.add(x.getAuthority());
                 }
-                newAccessToken = "Bearer" + tokenProvider.createAcessToken(accessTokenUserId, accessTokenAuthorities);
+                newAccessToken = "Bearer" + jwtTokenProvider.createAcessToken(accessTokenUserId, accessTokenAuthorities);
                 log.debug("토큰 재발급 성공");
                 SingleDataResponse<String> response = responseService.getSingleDataResponse(true, "accessToken 발급성공", newAccessToken);
                 responseEntity = ResponseEntity.status(HttpStatus.OK).body(response);

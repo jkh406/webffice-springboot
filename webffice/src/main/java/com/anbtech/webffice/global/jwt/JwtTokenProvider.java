@@ -50,6 +50,7 @@ public class JwtTokenProvider implements InitializingBean{
     public void afterPropertiesSet() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+        logger.info("jwt key = " + key);
     }
 
     /**
@@ -117,6 +118,7 @@ public class JwtTokenProvider implements InitializingBean{
     public String resolveToken(String token) {
         // String token = request.getHeader("Authorization");
         // 가져온 Authorization Header 가 문자열이고, Bearer 로 시작해야 가져옴
+    	logger.info("token resolveToken" + token);
         if (StringUtils.hasText(token) && token.startsWith("Bearer")) {
             return token.substring(6);
         }
@@ -127,9 +129,12 @@ public class JwtTokenProvider implements InitializingBean{
      */
     public boolean validateToken(String token) {
         // try {
+        	logger.info("token validateToken = " + token);
             Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            logger.info("claims" + claims);
             return !claims.getBody().getExpiration().before(new Date());
      }
+    
      private Claims parseClaims(String accessToken) {
         try {
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();

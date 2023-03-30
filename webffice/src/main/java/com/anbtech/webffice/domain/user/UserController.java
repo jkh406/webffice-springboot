@@ -43,10 +43,6 @@ public class UserController {
     UserService userService;
     @Autowired
     ResponseService responseService;
-//    @Autowired
-//    TokenProvider tokenProvider;
-
-
 
     @PostMapping(value="/join")
     public ResponseEntity<?> join(@RequestBody UserDTO user) {
@@ -60,7 +56,6 @@ public class UserController {
                 .path("/")
                 .maxAge(14 * 24 * 60 * 60) // 14일
                 .httpOnly(true)
-                // .httpOnly(true).secure(true)
                 .build();
             System.out.println(responseCookie.toString());
 
@@ -83,6 +78,7 @@ public class UserController {
         try {
             String userId = userService.login(loginDto);
             TokenDTO token = userService.tokenGenerator(userId);
+            log.info("userId" + userId);
             ResponseCookie responseCookie = 
                 ResponseCookie.from(HttpHeaders.SET_COOKIE, token.getRefreshToken())///new Cookie("refreshToken", token.getRefreshToken());
                 .path("/")

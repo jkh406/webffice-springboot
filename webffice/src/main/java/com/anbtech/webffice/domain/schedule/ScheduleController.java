@@ -34,7 +34,6 @@ public class ScheduleController {
     
     @DeleteMapping("/{id}")
     public void deleteSchedule(@PathVariable String id) {
-    	System.out.println("Schedule DB 삭제  " + id); 
     	scheduleService.deleteSchedule(id);
     	System.out.println("Schedule DB 삭제 성공 "); 
     }
