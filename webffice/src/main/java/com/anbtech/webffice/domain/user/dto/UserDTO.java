@@ -1,17 +1,26 @@
 package com.anbtech.webffice.domain.user.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import java.util.Collection;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
+import com.anbtech.webffice.domain.user.UserController;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Slf4j
 public class UserDTO implements UserDetails {
     private String userId;
     private String username;
@@ -39,6 +48,7 @@ public class UserDTO implements UserDetails {
 
     @Override
     public String getUsername() {
+    	log.info("username !!!" + username);
         return this.username;
     }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>  
 <!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="com.anbtech.webffice.domain.user.UserMapper">
     <select id="getUserAccount" resultType="com.anbtech.webffice.domain.user.UserVo">
@@ -31,10 +31,11 @@
       );
     </insert> -->
 
-    <select id="findUser" resultType="com.anbtech.webffice.domain.user.dto.UserDTO">
+    <select id="findUser" parameterType="com.anbtech.webffice.domain.user.UserVo"
+      resultType="com.anbtech.webffice.domain.user.dto.UserDTO">
       SELECT user_ID, user_PW, user_role
       FROM sys.user_TB
-      WHERE user_ID = #{userID}
+      WHERE user_ID = #{userId}
     </select>
 
     <select id="findUserId" resultType="com.anbtech.webffice.domain.user.dto.UserDTO">

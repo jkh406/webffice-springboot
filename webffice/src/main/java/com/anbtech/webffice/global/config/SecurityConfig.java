@@ -66,7 +66,7 @@ public class SecurityConfig {
 		http.exceptionHandling()  //예외처리
 		    .accessDeniedHandler(jwtAccessDeniedHandler)
 		    .authenticationEntryPoint(jwtAuthenticationEntryPoint); //사용자 인증방법
-		http.apply(new JwtSecurityConfig(jwttokenProvider));
+//		http.apply(new JwtSecurityConfig(jwttokenProvider));
 		
       return http.build();
 	}

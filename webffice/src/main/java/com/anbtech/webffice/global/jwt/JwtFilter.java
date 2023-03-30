@@ -80,16 +80,6 @@ public class JwtFilter extends GenericFilterBean{
                 refreshToken = cookie.getValue();
             }
         }
-
-        Cookie cookie = new Cookie("Authorization","Bearertest01");
-        cookie.setMaxAge(24 * 60 * 60); // 쿠키의 만료 시간을 24시간으로 설정
-
-        // optional properties
-        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        refreshToken = cookie.getValue();
-        httpServletResponse.addCookie(cookie);
         
         if (requestURI.equals("/api/v1/token/getAccessToken")) {
             useToken = jwtTokenProvider.resolveToken(refreshToken);

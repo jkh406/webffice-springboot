@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import com.anbtech.webffice.domain.user.UserMapper;
 import com.anbtech.webffice.domain.user.dto.LoginDTO;
@@ -20,6 +21,7 @@ import com.anbtech.webffice.global.exception.LoginFailedException;
 import com.anbtech.webffice.global.jwt.JwtTokenProvider;
 
 @Service
+@Slf4j
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserService{
@@ -67,9 +69,10 @@ public class UserService{
      * @return result[0]: accessToken, result[1]: refreshToken
      */
     public String login (LoginDTO loginDTO) {
-
+    	log.info("login start" + loginDTO.getUserId());
         UserDTO userDto = userMapper.findUser(loginDTO.getUserId())
                 .orElseThrow(() -> new LoginFailedException("잘못된 아이디입니다"));
+    	log.info("login start..." + loginDTO.getUserId());
         
         if (!passwordEncoder.matches(loginDTO.getUserPw(), userDto.getPassword())) {
             throw new LoginFailedException("잘못된 비밀번호입니다");

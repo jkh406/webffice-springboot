@@ -45,14 +45,14 @@ public class UserController {
     ResponseService responseService;
 
     @PostMapping(value="/join")
-    public ResponseEntity<?> join(@RequestBody UserDTO user) {
+    public ResponseEntity join(@RequestBody UserDTO user) {
         ResponseEntity responseEntity = null;
         
         try {
             userService.join(user);
             TokenDTO token = userService.tokenGenerator(user.getUserId());
             ResponseCookie responseCookie = 
-                ResponseCookie.from(HttpHeaders.SET_COOKIE, token.getRefreshToken())///new Cookie("refreshToken", token.getRefreshToken());
+                ResponseCookie.from(HttpHeaders.SET_COOKIE, token.getRefreshToken())
                 .path("/")
                 .maxAge(14 * 24 * 60 * 60) // 14일
                 .httpOnly(true)
@@ -76,9 +76,10 @@ public class UserController {
     public ResponseEntity login(@RequestBody LoginDTO loginDto) {
         ResponseEntity responseEntity = null;
         try {
+            log.info("login start !!!");
             String userId = userService.login(loginDto);
-            TokenDTO token = userService.tokenGenerator(userId);
             log.info("userId" + userId);
+            TokenDTO token = userService.tokenGenerator(userId);
             ResponseCookie responseCookie = 
                 ResponseCookie.from(HttpHeaders.SET_COOKIE, token.getRefreshToken())///new Cookie("refreshToken", token.getRefreshToken());
                 .path("/")
