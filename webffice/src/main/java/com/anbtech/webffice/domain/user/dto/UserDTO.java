@@ -5,7 +5,6 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.anbtech.webffice.domain.user.UserController;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -13,23 +12,20 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Slf4j
 public class UserDTO implements UserDetails {
-    private String userId;
-    private String username;
+    private String user_ID;
+    private String user_name;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String userPw;
-    private String userRole;
-    // private String userAuth;
-    private String createDate;
-    private String updateDate;
+    private String user_PW;
+    private String user_role;
+    private String create_Date;
+    private String update_Date;
 
 
     // 이하 코드는 security 를 위한 용도
@@ -43,13 +39,12 @@ public class UserDTO implements UserDetails {
 
     @Override
     public String getPassword() {
-        return this.userPw;
+        return this.user_PW;
     }
 
     @Override
     public String getUsername() {
-    	log.info("username !!!" + username);
-        return this.username;
+        return this.user_name;
     }
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

@@ -19,7 +19,7 @@
     <insert id="join" parameterType="com.anbtech.webffice.domain.user.dto.UserDTO">
       INSERT INTO sys.user_TB
       (user_ID, user_PW, user_role, create_date, update_date)
-      VALUES(#{userId}, #{userPw}, #{userRole}, #{createDate}, #{updateDate});
+      VALUES(#{user_ID}, #{user_PW}, #{user_role}, #{create_Date}, #{update_Date});
     </insert>
 
     <!-- <insert id="addRole" parameterType="com.anbtech.webffice.domain.user.dto.UserDTO">
@@ -32,7 +32,7 @@
     </insert> -->
 
     <select id="findUser" parameterType="com.anbtech.webffice.domain.user.UserVo"
-      resultType="com.anbtech.webffice.domain.user.dto.UserDTO">
+     resultType="com.anbtech.webffice.domain.user.dto.UserDTO">
       SELECT user_ID, user_PW, user_role
       FROM sys.user_TB
       WHERE user_ID = #{userId}

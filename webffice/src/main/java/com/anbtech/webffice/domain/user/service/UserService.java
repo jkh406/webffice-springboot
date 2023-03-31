@@ -45,23 +45,24 @@ public class UserService{
     @Transactional
     public boolean join(UserDTO user) {
         // 가입된 유저인지 확인
-        if (userMapper.findUserId(user.getUserId()).isPresent()) {
+    	System.out.println("!!!");
+        if (userMapper.findUserId(user.getUser_ID()).isPresent()) {
             System.out.println("!!!");
             throw new DuplicatedUsernameException("이미 가입된 유저입니다.");
         }
         
         // 가입 안했으면 아래 진행
         UserDTO userVo = UserDTO.builder()
-        .userId(user.getUserId())
-        .userPw(passwordEncoder.encode(user.getUserPw()))
-        .userRole("ROLE_USER")
-        .createDate(localTime)
-        .updateDate(localTime)
+        .user_ID(user.getUser_ID())
+        .user_PW(passwordEncoder.encode(user.getUser_PW()))
+        .user_role("ROLE_USER")
+        .create_Date(localTime)
+        .update_Date(localTime)
         .build();
 
         userMapper.join(userVo);
         
-        return userMapper.findUserId(user.getUserId()).isPresent();
+        return userMapper.findUserId(user.getUser_ID()).isPresent();
     }
     /**
      * 토큰 발급받는 메소드
@@ -69,16 +70,16 @@ public class UserService{
      * @return result[0]: accessToken, result[1]: refreshToken
      */
     public String login (LoginDTO loginDTO) {
+        
     	log.info("login start" + loginDTO.getUserId());
         UserDTO userDto = userMapper.findUser(loginDTO.getUserId())
                 .orElseThrow(() -> new LoginFailedException("잘못된 아이디입니다"));
-    	log.info("login start..." + loginDTO.getUserId());
-        
+
         if (!passwordEncoder.matches(loginDTO.getUserPw(), userDto.getPassword())) {
             throw new LoginFailedException("잘못된 비밀번호입니다");
         }
 
-        return userDto.getUserId();
+        return userDto.getUser_ID();
     }
 
     /**
@@ -111,8 +112,8 @@ public class UserService{
         .orElseThrow(() -> new LoginFailedException("잘못된 아이디입니다"));
 
         return TokenDTO.builder()
-        .accessToken("Bearer" + jwtTokenProvider.createAcessToken(userDto.getUserId(), Collections.singletonList(userDto.getUserRole())))
-        .refreshToken("Bearer" + jwtTokenProvider.createRefreshToken(userDto.getUserId(), Collections.singletonList(userDto.getUserRole())))
+        .accessToken("Bearer" + jwtTokenProvider.createAcessToken(userDto.getUser_ID(), Collections.singletonList(userDto.getUser_role())))
+        .refreshToken("Bearer" + jwtTokenProvider.createRefreshToken(userDto.getUser_ID(), Collections.singletonList(userDto.getUser_role())))
         .build();
     }
 

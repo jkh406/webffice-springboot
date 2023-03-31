@@ -7,18 +7,21 @@ spring:
     url: jdbc:log4jdbc:mariadb://localhost:3306/sys
     username: root
     password: 1234
-    servlet:
-    multipart:
-    max-file-size: 100MB
-    max-request-size: 120MB
+    hikari:
+            connectionTimeout : 30000
+            maximumPoolSize : 10
+            maxLifetime : 1800000
+            poolName : HikariCP
+            readOnly : false
+            connectionTestQuery : SELECT 1
     
   jpa:
     hibernate:
       ddl-auto: create
     properties:
       hibernate:
-        show-sql: 'true'
-        format_sql: true
+      #      show_sql: true
+      format_sql: true
         
 security:
   user:
