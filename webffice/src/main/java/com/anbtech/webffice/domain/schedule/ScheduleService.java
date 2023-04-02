@@ -11,8 +11,8 @@ public class ScheduleService {
     @Autowired
     private ScheduleMapper scheduleMapper;
 
-    public List<ScheduleVO> selectScheduleList(String id){ 
-    	return scheduleMapper.selectScheduleList(id); 
+    public List<ScheduleVO> selectSchedule(String id){ 
+    	return scheduleMapper.selectSchedule(id); 
 	}
     
     public void insertSchedule(ScheduleVO vo){

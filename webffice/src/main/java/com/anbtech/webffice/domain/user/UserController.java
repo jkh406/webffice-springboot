@@ -1,6 +1,12 @@
 package com.anbtech.webffice.domain.user;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -18,6 +24,8 @@ import com.anbtech.webffice.domain.user.dto.TokenDTO;
 import com.anbtech.webffice.domain.user.dto.UserDTO;
 import com.anbtech.webffice.domain.user.service.UserService;
 import com.anbtech.webffice.global.DTO.response.BaseResponse;
+import com.anbtech.webffice.global.DTO.response.ListDataResponse;
+import com.anbtech.webffice.global.DTO.response.MapDataResponse;
 import com.anbtech.webffice.global.DTO.response.SingleDataResponse;
 import com.anbtech.webffice.global.exception.DuplicatedUsernameException;
 import com.anbtech.webffice.global.exception.LoginFailedException;
@@ -64,17 +72,23 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDto) {
+        log.info("login start !!!");
         try {
-            log.info("login start !!!");
-            String userId = userService.login(loginDto);
-            TokenDTO token = userService.tokenGenerator(userId);
+            UserDTO userDto = userService.login(loginDto);
+            TokenDTO token = userService.tokenGenerator(userDto.getUser_ID());
+            Map<String, Object> userDataMap = userDto.getUserDataMap();
+            
+            Map<String, Object> data = new LinkedHashMap<>();
+            data.put("Token", token.getAccessToken());
+            data.put("User", userDataMap);
+            
             ResponseCookie responseCookie = ResponseCookie.from(HttpHeaders.SET_COOKIE, token.getRefreshToken())
                     .path("/")
                     .maxAge(14 * 24 * 60 * 60) // 14일
                     .httpOnly(true)
                     .build();
 
-            SingleDataResponse<String> response = responseService.getSingleDataResponse(true, userId, token.getAccessToken());
+            MapDataResponse<Object> response = responseService.getMapDataResponse(true, userDto.getUser_ID(), data);
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.SET_COOKIE, responseCookie.toString());
             return ResponseEntity.ok().headers(headers).body(response);

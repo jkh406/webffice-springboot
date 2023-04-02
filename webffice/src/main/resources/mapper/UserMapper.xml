@@ -33,7 +33,7 @@
 
     <select id="findUser" parameterType="com.anbtech.webffice.domain.user.UserVo"
      resultType="com.anbtech.webffice.domain.user.dto.UserDTO">
-      SELECT user_ID, user_PW, user_role
+      SELECT user_id, user_PW, user_role, create_date, update_date, avatar, user_name
       FROM sys.user_TB
       WHERE user_ID = #{userId}
     </select>

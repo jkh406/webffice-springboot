@@ -1,6 +1,8 @@
 package com.anbtech.webffice.domain.user.dto;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,7 +28,16 @@ public class UserDTO implements UserDetails {
     private String user_role;
     private String create_Date;
     private String update_Date;
-
+    private String avatar;
+    
+    public Map<String, Object> getUserDataMap() {
+        Map<String, Object> userDataMap = new LinkedHashMap<>();
+        userDataMap.put("user_ID", this.user_ID);
+        userDataMap.put("user_name", this.user_name);
+        userDataMap.put("user_role", this.user_role);
+        userDataMap.put("avatar", this.avatar);
+        return userDataMap;
+    }
 
     // 이하 코드는 security 를 위한 용도
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

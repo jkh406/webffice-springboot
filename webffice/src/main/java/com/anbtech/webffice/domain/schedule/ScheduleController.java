@@ -21,12 +21,12 @@ public class ScheduleController {
     private ScheduleService scheduleService;
     
     @GetMapping("/{id}")
-    public List<ScheduleVO> getSelectList(@PathVariable String id){ 
+    public List<ScheduleVO> selectSchedule(@PathVariable String id){ 
     	System.out.println("Scheduel List 출력 성공 " + id); 
-    	return scheduleService.selectScheduleList(id);
+    	return scheduleService.selectSchedule(id);
 	}
     
-    @PostMapping
+    @PostMapping("/insert")
     public void insertSchedule(@RequestBody ScheduleVO schedule){
         scheduleService.insertSchedule(schedule);
     	System.out.println("Schedule DB 저장 성공 "); 

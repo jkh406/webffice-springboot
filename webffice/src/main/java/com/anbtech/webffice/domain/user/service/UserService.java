@@ -69,17 +69,16 @@ public class UserService{
      * @param loginDTO 로그인 하는 유저의 정보
      * @return result[0]: accessToken, result[1]: refreshToken
      */
-    public String login (LoginDTO loginDTO) {
-        
-    	log.info("login start" + loginDTO.getUserId());
+    public UserDTO login (LoginDTO loginDTO) {
+
         UserDTO userDto = userMapper.findUser(loginDTO.getUserId())
                 .orElseThrow(() -> new LoginFailedException("잘못된 아이디입니다"));
-
+        
         if (!passwordEncoder.matches(loginDTO.getUserPw(), userDto.getPassword())) {
             throw new LoginFailedException("잘못된 비밀번호입니다");
         }
 
-        return userDto.getUser_ID();
+        return userDto;
     }
 
     /**
@@ -103,7 +102,7 @@ public class UserService{
     public UserDTO findUserId(String userId) {
         return userMapper.findUserId(userId)
                 .orElseThrow(() -> 
-                    new DuplicatedUsernameException("유저 중볶!~!!!!."));
+                    new DuplicatedUsernameException("유저 중복"));
     }
 
     public TokenDTO tokenGenerator(String userId) {

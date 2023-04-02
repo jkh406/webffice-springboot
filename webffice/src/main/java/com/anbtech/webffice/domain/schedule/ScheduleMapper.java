@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ScheduleMapper {
 	
-    List<ScheduleVO> selectScheduleList(String id);
+    List<ScheduleVO> selectSchedule(String id);
     void insertSchedule(ScheduleVO vo);
     void deleteSchedule(String id);
     

@@ -1,6 +1,7 @@
 package com.anbtech.webffice.global.config;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -66,7 +67,7 @@ public class SecurityConfig {
 		http.exceptionHandling()  //예외처리
 		    .accessDeniedHandler(jwtAccessDeniedHandler)
 		    .authenticationEntryPoint(jwtAuthenticationEntryPoint); //사용자 인증방법
-//		http.apply(new JwtSecurityConfig(jwttokenProvider));
+		http.apply(new JwtSecurityConfig(jwttokenProvider));
 		
       return http.build();
 	}
@@ -75,9 +76,10 @@ public class SecurityConfig {
 	CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        configuration.addAllowedOrigin("http://localhost:8080");
+        configuration.addAllowedOrigin("http://localhost:3000");
         configuration.setAllowedMethods(Arrays.asList("GET","POST", "OPTIONS", "PUT","DELETE"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "accept", "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"));
+//        configuration.setAllowedHeaders(Arrays.asList("*"));
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

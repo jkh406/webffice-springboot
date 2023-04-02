@@ -104,6 +104,7 @@ public class JwtTokenProvider implements InitializingBean{
         
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
+    
     // // 유저 이름 추출
     public String getUserId(String token) {
         return Jwts.parserBuilder()
@@ -116,7 +117,6 @@ public class JwtTokenProvider implements InitializingBean{
 
     // Request header에서 token 꺼내옴
     public String resolveToken(String token) {
-        // String token = request.getHeader("Authorization");
         // 가져온 Authorization Header 가 문자열이고, Bearer 로 시작해야 가져옴
     	logger.info("token resolveToken" + token);
         if (StringUtils.hasText(token) && token.startsWith("Bearer")) {
@@ -124,6 +124,7 @@ public class JwtTokenProvider implements InitializingBean{
         }
         return null;
     }
+    
     /**
      * 토큰을 파싱하고 발생하는 예외를 처리, 문제가 있을경우 false 반환
      */

@@ -50,26 +50,25 @@ public class JwtFilter extends GenericFilterBean{
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
         throws IOException, ServletException {
 
-
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         String requestURI = httpServletRequest.getRequestURI();
 
-//        // 아래 URL로 접근시 토큰이 필요하지 않으므로 바로 접근시킴.
-//        if (requestURI.equals("/api/v1/login") 
-//        || requestURI.equals("/api/v1/logout") 
-//        || requestURI.equals("/api/v1/join") 
-//        || requestURI.equals("/api/v1/get")
-//        || requestURI.equals("/api/v1/token/getAccessToken")
-//        || requestURI.equals("/api/v1/board/readBoardLists")
-//        || requestURI.equals("/api/v1/board/getBoardListLimit")
-//        || requestURI.equals("/api/v1/board/getBoard")
-//        || requestURI.equals("/")
-//        || requestURI.equals("/schedule")
-//        ){
-//            filterChain.doFilter(request, response);
-//            return;
-//        }
+        log.info("cookies ="+ requestURI);
+        // 아래 URL로 접근시 토큰이 필요하지 않으므로 바로 접근시킴.
+        if (requestURI.equals("/api/v1/login") 
+        || requestURI.equals("/api/v1/logout") 
+        || requestURI.equals("/api/v1/join") 
+        || requestURI.equals("/api/v1/get")
+        || requestURI.equals("/api/v1/token/getAccessToken")
+        || requestURI.equals("/api/v1/board/readBoardLists")
+        || requestURI.equals("/api/v1/board/getBoardListLimit")
+        || requestURI.equals("/api/v1/board/getBoard")
+        || requestURI.equals("/")
+        ){
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         Cookie[] cookies = httpServletRequest.getCookies();
         String refreshToken = null;
@@ -78,6 +77,7 @@ public class JwtFilter extends GenericFilterBean{
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals(HttpHeaders.SET_COOKIE)) {
                 refreshToken = cookie.getValue();
+                log.info("refreshToken ="+ cookie.getValue());
             }
         }
         
@@ -95,10 +95,15 @@ public class JwtFilter extends GenericFilterBean{
             }
         }
         else {
+        	logger.debug("useToken = ", httpServletRequest.getHeader("Authorization"));
             useToken = jwtTokenProvider.resolveToken(httpServletRequest.getHeader("Authorization"));
+            logger.debug("useToken", StringUtils.hasText(useToken));
+            logger.debug("useToken2", useToken);
         }
 
         try {
+        	logger.debug("token1", StringUtils.hasText(useToken));
+        	logger.debug("token2", jwtTokenProvider.validateToken(useToken));
             if (StringUtils.hasText(useToken) && jwtTokenProvider.validateToken(useToken)) {
                 Authentication authentication = jwtTokenProvider.getAuthentication(useToken);
                 
@@ -112,7 +117,6 @@ public class JwtFilter extends GenericFilterBean{
             
         } catch (SecurityException | MalformedJwtException e) {
             logger.info("잘못된 JWT 서명입니다.");
-            logger.info("useToken" + useToken);
             setErrorResponse(HttpStatus.UNAUTHORIZED,httpServletResponse, e);
         } catch (ExpiredJwtException e) {
             logger.info("만료된 JWT 토큰입니다.");

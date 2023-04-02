@@ -23,8 +23,8 @@ public class CorsFilter implements Filter {
     	
         System.out.println("필터링이 진행중입니다..."); 
         HttpServletResponse response = (HttpServletResponse) res;
-        response.setHeader("Access-Control-Allow-Origin", "*");
-//        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Methods", "*");
         response.setHeader("Access-Control-Allow-Max-Age", "3600");
         response.setHeader("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, "
