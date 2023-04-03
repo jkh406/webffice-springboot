@@ -5,7 +5,7 @@
 
 <mapper namespace="com.anbtech.webffice.domain.schedule.ScheduleMapper">
 
-    <select id="selectScheduleList" resultType="com.anbtech.webffice.domain.schedule.ScheduleVO"
+    <select id="selectSchedule" resultType="com.anbtech.webffice.domain.schedule.ScheduleVO"
      parameterType= "com.anbtech.webffice.domain.schedule.ScheduleVO">
         SELECT *
           FROM SCHEDULE_BOARD

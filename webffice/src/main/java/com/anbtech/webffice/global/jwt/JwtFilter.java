@@ -54,18 +54,13 @@ public class JwtFilter extends GenericFilterBean{
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         String requestURI = httpServletRequest.getRequestURI();
 
-        log.info("cookies ="+ requestURI);
+        log.info("cookies requestURI ="+ requestURI);
         // 아래 URL로 접근시 토큰이 필요하지 않으므로 바로 접근시킴.
-        if (requestURI.equals("/api/v1/login") 
-        || requestURI.equals("/api/v1/logout") 
-        || requestURI.equals("/api/v1/join") 
-        || requestURI.equals("/api/v1/get")
+        if (requestURI.equals("/api/v1/login")
+		|| requestURI.equals("/auth/login")
         || requestURI.equals("/api/v1/token/getAccessToken")
-        || requestURI.equals("/api/v1/board/readBoardLists")
-        || requestURI.equals("/api/v1/board/getBoardListLimit")
-        || requestURI.equals("/api/v1/board/getBoard")
-        || requestURI.equals("/")
         ){
+        	log.info("cookies skip =");
             filterChain.doFilter(request, response);
             return;
         }

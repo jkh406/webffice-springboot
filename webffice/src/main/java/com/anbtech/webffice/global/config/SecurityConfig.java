@@ -50,12 +50,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 //        http.authorizeHttpRequests() //요청 URL에 따라 접근 권한을 설정한다
-//    	      .requestMatchers(URL_TO_PERMIT).permitAll()
-//            .requestMatchers("/api/v1/get").permitAll()
-//            .requestMatchers("/schedule").permitAll()
-//            .requestMatchers("/api/v1/login").permitAll()
-//            .requestMatchers("/api/v1/join").hasRole("USER")
-//        	.requestMatchers("/**");
+//    		.requestMatchers("/api/v1/token/getAccessToken").permitAll()
+//        	.requestMatchers("/api/v1/login").permitAll()
+//        	.requestMatchers("/api/**").hasAnyRole("ADMIN", "USER");
         http.formLogin();
         http.cors().configurationSource(corsConfigurationSource());
 		http.csrf().disable(); //세션을 사용하지 않고 JWT 토큰을 활용하여 진행, csrf토큰검사를 비활성화
