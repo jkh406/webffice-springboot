@@ -29,6 +29,7 @@ public class UserDTO implements UserDetails {
     private String create_Date;
     private String update_Date;
     private String avatar;
+    private String page_url;
     
     public Map<String, Object> getUserDataMap() {
         Map<String, Object> userDataMap = new LinkedHashMap<>();

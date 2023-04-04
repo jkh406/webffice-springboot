@@ -12,4 +12,5 @@ public interface UserMapper {
     void join(UserDTO userVo);  
     Optional<UserDTO> findUser(String userId);
     Optional<UserDTO> findUserId(String userId);
+    List<String> pageList(String userId);
 }

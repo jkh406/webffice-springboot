@@ -3,14 +3,12 @@ package com.anbtech.webffice.domain.user.service;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import com.anbtech.webffice.domain.user.UserMapper;
 import com.anbtech.webffice.domain.user.dto.LoginDTO;
@@ -19,6 +17,9 @@ import com.anbtech.webffice.domain.user.dto.UserDTO;
 import com.anbtech.webffice.global.exception.DuplicatedUsernameException;
 import com.anbtech.webffice.global.exception.LoginFailedException;
 import com.anbtech.webffice.global.jwt.JwtTokenProvider;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
@@ -104,9 +105,18 @@ public class UserService{
                 .orElseThrow(() -> 
                     new DuplicatedUsernameException("유저 중복"));
     }
-
+    
+    /**
+     * 권한이 있는 page가져오는 함수 
+     */
+    public List<String> pageList(String userId) {
+        return  userMapper.pageList(userId);
+    }
+    
+    /**
+     * Token 생성
+     */
     public TokenDTO tokenGenerator(String userId) {
-        
         UserDTO userDto = userMapper.findUser(userId)
         .orElseThrow(() -> new LoginFailedException("잘못된 아이디입니다"));
 

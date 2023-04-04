@@ -58,6 +58,7 @@ public class JwtFilter extends GenericFilterBean{
         // 아래 URL로 접근시 토큰이 필요하지 않으므로 바로 접근시킴.
         if (requestURI.equals("/api/v1/login")
 		|| requestURI.equals("/auth/login")
+		|| requestURI.equals("/api/v1/logout")
         || requestURI.equals("/api/v1/token/getAccessToken")
         ){
         	log.info("cookies skip =");
