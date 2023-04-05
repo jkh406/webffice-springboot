@@ -40,15 +40,15 @@
     
     <select id="pageList" parameterType="com.anbtech.webffice.domain.user.UserVo"
      resultType="com.anbtech.webffice.domain.user.dto.UserDTO">
-select d.page_url 
-  from sys.user_tb a
-  join sys.authorities b
-    on a.user_ID = b.username 
-  join sys.page_authorities c
-    on c.authority = b.authority 
-  join sys.pages d 
-    on d.page_id = c.page_id 
- where a.user_ID = #{userId}
+	select a.user_ID as user_ID, b.authority as authority, d.page_url as page_url 
+	  from sys.user_tb a
+	  join sys.authorities b
+	    on a.user_ID = b.username 
+	  join sys.page_authorities c
+	    on c.authority = b.authority 
+	  join sys.pages d 
+	    on d.page_id = c.page_id 
+	 where a.user_ID = #{userId}
     </select>
 
     <select id="findUserId" resultType="com.anbtech.webffice.domain.user.dto.UserDTO">

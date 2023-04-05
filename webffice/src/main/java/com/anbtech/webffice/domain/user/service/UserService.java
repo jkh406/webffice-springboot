@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -109,8 +110,11 @@ public class UserService{
     /**
      * 권한이 있는 page가져오는 함수 
      */
-    public List<String> pageList(String userId) {
-        return  userMapper.pageList(userId);
+    public List<UserDTO> pageList(String userId) {
+
+        List<UserDTO> userDto = userMapper.pageList(userId);
+        
+        return  userDto;
     }
     
     /**
