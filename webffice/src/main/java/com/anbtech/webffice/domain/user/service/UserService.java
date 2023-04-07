@@ -73,10 +73,10 @@ public class UserService{
      */
     public UserDTO login (LoginDTO loginDTO) {
 
-        UserDTO userDto = userMapper.findUser(loginDTO.getUserId())
+        UserDTO userDto = userMapper.findUser(loginDTO.getUser_Id())
                 .orElseThrow(() -> new LoginFailedException("잘못된 아이디입니다"));
         
-        if (!passwordEncoder.matches(loginDTO.getUserPw(), userDto.getPassword())) {
+        if (!passwordEncoder.matches(loginDTO.getUser_Pw(), userDto.getPassword())) {
             throw new LoginFailedException("잘못된 비밀번호입니다");
         }
 
@@ -88,8 +88,8 @@ public class UserService{
      * @param userid 유저의 아이디 입력
      * @return 유저가 있다면: true, 유저가 없다면: false
      */
-    public boolean haveUser(String userid) {
-        if (userMapper.findUserId(userid).isPresent()) {
+    public boolean haveUser(String user_Id) {
+        if (userMapper.findUserId(user_Id).isPresent()) {
             return true;
         }else {
             return false;
@@ -101,8 +101,8 @@ public class UserService{
      * @param userId 유저의 아이디 입력
      * @return 유저의 아이디가 없다면 에러를 뱉고, 있다면 userId리턴
      */
-    public UserDTO findUserId(String userId) {
-        return userMapper.findUserId(userId)
+    public UserDTO findUserId(String user_Id) {
+        return userMapper.findUserId(user_Id)
                 .orElseThrow(() -> 
                     new DuplicatedUsernameException("유저 중복"));
     }
@@ -110,9 +110,9 @@ public class UserService{
     /**
      * 권한이 있는 page가져오는 함수 
      */
-    public List<UserDTO> pageList(String userId) {
+    public List<UserDTO> pageList(String user_Id) {
 
-        List<UserDTO> userDto = userMapper.pageList(userId);
+        List<UserDTO> userDto = userMapper.pageList(user_Id);
         
         return  userDto;
     }
@@ -120,8 +120,8 @@ public class UserService{
     /**
      * Token 생성
      */
-    public TokenDTO tokenGenerator(String userId) {
-        UserDTO userDto = userMapper.findUser(userId)
+    public TokenDTO tokenGenerator(String user_Id) {
+        UserDTO userDto = userMapper.findUser(user_Id)
         .orElseThrow(() -> new LoginFailedException("잘못된 아이디입니다"));
 
         return TokenDTO.builder()

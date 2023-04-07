@@ -60,14 +60,14 @@ public class SecurityConfig {
         http.authorizeHttpRequests() //요청 URL에 따라 접근 권한을 설정
         	.requestMatchers("/api/v1/login").permitAll()
         	.requestMatchers("/api/v1/logout").permitAll()
+        	.requestMatchers("/404").permitAll()
         	.requestMatchers("/error").permitAll()
-//        	.requestMatchers("/api/schedule/admin@anbtech.co.kr").permitAll()
     		.anyRequest().access(myAuthorizationManager());
         http.formLogin()
             .loginPage("/auth/login")
     		.defaultSuccessUrl("/")
-    		.usernameParameter("userId")
-            .passwordParameter("password");
+    		.usernameParameter("user_Id")
+            .passwordParameter("user_Pw");
         http.cors().configurationSource(corsConfigurationSource());
 		http.csrf().disable(); //세션을 사용하지 않고 JWT 토큰을 활용하여 진행, csrf토큰검사를 비활성화
 		http.httpBasic().disable();
@@ -88,7 +88,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
         configuration.addAllowedOrigin("http://localhost:3000");
-        configuration.setAllowedMethods(Arrays.asList("GET","POST", "OPTIONS", "PUT","DELETE"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST", "OPTIONS", "PUT", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "accept", "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

@@ -13,6 +13,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Component
 public class LoginDTO {
-    private String userId;
-    private String userPw;
+    private String user_Id;
+    private String user_Pw;
 }

@@ -6,14 +6,14 @@
 <mapper namespace="com.anbtech.webffice.domain.user.UserMapper">
     <select id="getUserAccount" resultType="com.anbtech.webffice.domain.user.UserVo">
         SELECT * FROM TB_USER
-        WHERE USER_ID= #{userId}
+        WHERE USER_ID= #{user_Id}
     </select>
 
     <!-- 회원가입 -->
     <insert id="saveUser" parameterType="com.anbtech.webffice.domain.user.UserVo">
         INSERT INTO TB_USER
         (USER_ID, USER_PW, USER_NAME, USER_AUTH, APPEND_DATE, UPDATE_DATE)
-        VALUES(#{userId},#{userPw},#{userName},#{userAuth},#{appendDate},#{updateDate});
+        VALUES(#{user_Id},#{user_Pw},#{userName},#{userAuth},#{appendDate},#{updateDate});
     </insert>
 
     <insert id="join" parameterType="com.anbtech.webffice.domain.user.dto.UserDTO">
@@ -26,7 +26,7 @@
       INSERT INTO user_authority_TB
       (user_FK, authority_FK)
       VALUES(
-        (SELECT user_PK FROM user_TB WHERE user_ID = #{userId}),
+        (SELECT user_PK FROM user_TB WHERE user_ID = #{user_Id}),
         (SELECT authority_PK FROM authority_TB WHERE authority_PK = #{userRole})
       );
     </insert> -->
@@ -35,7 +35,7 @@
      resultType="com.anbtech.webffice.domain.user.dto.UserDTO">
       SELECT user_id, user_PW, user_role, create_date, update_date, avatar, user_name
       FROM sys.user_TB
-      WHERE user_ID = #{userId}
+      WHERE user_ID = #{user_Id}
     </select>
     
     <select id="pageList" parameterType="com.anbtech.webffice.domain.user.UserVo"
@@ -48,13 +48,13 @@
 	    on c.authority = b.authority 
 	  join sys.pages d 
 	    on d.page_id = c.page_id 
-	 where a.user_ID = #{userId}
+	 where a.user_ID = #{user_Id}
     </select>
 
     <select id="findUserId" resultType="com.anbtech.webffice.domain.user.dto.UserDTO">
       SELECT user_PK 
       FROM sys.user_TB
-      WHERE user_ID = #{userId};
+      WHERE user_ID = #{user_Id};
     </select>
 </mapper>
 

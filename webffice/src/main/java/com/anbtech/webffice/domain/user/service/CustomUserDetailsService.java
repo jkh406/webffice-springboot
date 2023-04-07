@@ -25,10 +25,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     UserMapper userMapper;
 
     @Override
-    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        return userMapper.findUser(userId)
+    public UserDetails loadUserByUsername(String user_Id) throws UsernameNotFoundException {
+        return userMapper.findUser(user_Id)
                 .map(user -> addAuthorities(user))
-                .orElseThrow(() -> new UserNotFoundException(userId + ">ID를 찾을 수 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException(user_Id + ">ID를 찾을 수 없습니다."));
     }
 
     private UserDTO addAuthorities(UserDTO userDTO) {

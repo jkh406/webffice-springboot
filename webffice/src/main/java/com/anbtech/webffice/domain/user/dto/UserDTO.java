@@ -3,6 +3,7 @@ package com.anbtech.webffice.domain.user.dto;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,7 +30,9 @@ public class UserDTO implements UserDetails {
     private String create_Date;
     private String update_Date;
     private String avatar;
+    private String authority;
     private String page_url;
+    private String req_method;
     
     public Map<String, Object> getUserDataMap() {
         Map<String, Object> userDataMap = new LinkedHashMap<>();
@@ -38,6 +41,14 @@ public class UserDTO implements UserDetails {
         userDataMap.put("user_role", this.user_role);
         userDataMap.put("avatar", this.avatar);
         return userDataMap;
+    }
+    
+    public Map<String, Object> getPageAuthority() {
+        Map<String, Object> pageAuthorityMap = new LinkedHashMap<>();
+        pageAuthorityMap.put("user_ID", this.user_ID);
+        pageAuthorityMap.put("authority", this.authority);
+        pageAuthorityMap.put("page_url", this.page_url);
+        return pageAuthorityMap;
     }
 
     // 이하 코드는 security 를 위한 용도

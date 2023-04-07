@@ -59,14 +59,14 @@ public class JwtTokenProvider implements InitializingBean{
      * @param roles 발급받는 유저의 권한
      * @return 발급받은 토큰을 리턴해줌
      */
-    public String createAcessToken(String userId, List<String> roles) {
-        Claims claims = Jwts.claims().setSubject(userId);
+    public String createAcessToken(String user_Id, List<String> roles) {
+        Claims claims = Jwts.claims().setSubject(user_Id);
         claims.put("roles", roles);
         // 토큰 만료기간
         Date now = new Date();
         Date validity = new Date(now.getTime() + this.accessTokenValidityInMilliseconds);
         return Jwts.builder()
-                .setSubject(userId)
+                .setSubject(user_Id)
                 .setClaims(claims)
                 .setIssuedAt(now) //토큰 발행 시간정보
                 .setExpiration(validity) // 토큰 만료일 설정
@@ -80,14 +80,14 @@ public class JwtTokenProvider implements InitializingBean{
      * @param roles 발급받는 유저의 권한
      * @return 발급받은 토큰을 리턴해줌
      */
-    public String createRefreshToken(String userId, List<String> roles){//, List<String> roles) {
-        Claims claims = Jwts.claims().setSubject(userId);
+    public String createRefreshToken(String user_Id, List<String> roles){//, List<String> roles) {
+        Claims claims = Jwts.claims().setSubject(user_Id);
         claims.put("roles", roles);
         // 토큰 만료기간
         Date now = new Date();
         Date validity = new Date(now.getTime() + this.refreshTokenValidityInMilliseconds);
         return Jwts.builder()
-                .setSubject(userId)
+                .setSubject(user_Id)
                 .setClaims(claims)
                 .setIssuedAt(now) //토큰 발행 시간정보
                 .setExpiration(validity) // 토큰 만료일 설정

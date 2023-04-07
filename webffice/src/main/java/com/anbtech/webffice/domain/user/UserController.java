@@ -126,10 +126,10 @@ public class UserController {
      * @param idDTO userId 전송을 위한 DTO
      * @return userId가 있다면 success값을 true, 없다면 false를 리턴.
      */
-    @GetMapping("/users/{userId}")
-    public ResponseEntity<BaseResponse> isHaveUser(@RequestParam String userId) {
+    @GetMapping("/users/{user_Id}")
+    public ResponseEntity<BaseResponse> isHaveUser(@RequestParam String user_Id) {
         try {
-            boolean isHaveUser = userService.haveUser(userId);
+            boolean isHaveUser = userService.haveUser(user_Id);
             String message = isHaveUser ? "회원가입된 유저입니다." : "회원가입 안된 유저입니다.";
             SingleDataResponse<Boolean> response = responseService.getSingleDataResponse(true, message, isHaveUser);
             return ResponseEntity.ok(response);

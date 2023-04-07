@@ -48,6 +48,7 @@ public class MyAuthorizationManager implements AuthorizationManager<RequestAutho
 		    resultMap.put("user_ID", userDto.getUser_ID());
 		    resultMap.put("authority", userDto.getAuthority());
 		    resultMap.put("page_url", userDto.getPage_url());
+		    resultMap.put("req_method", userDto.getReq_method());
 		    pageAuthorityMap.add(resultMap);
 		}
 		System.out.print("AuthorizationDecision user pageAuthorityMap " + pageAuthorityMap);
@@ -58,31 +59,17 @@ public class MyAuthorizationManager implements AuthorizationManager<RequestAutho
 		System.out.print("AuthorizationDecision requestedUrl " + requestedUrl);
 		System.out.print("AuthorizationDecision requestedMethod " + requestedMethod);
 		
-		
-//		Set<String> urlRoles = getUrlRoles(requestedUrl, requestedMethod); // 요청한 URL에 필요한 권한 정보를 디비에서 가져옴
-		
-		// 유저의 권한과 URL의 접근 권한 비교하여 접근 허용 여부 결정
-//		for(String role : urlRoles) {
-//			if(userRoles.contains(role)) {
-//				return decision = new AuthorizationDecision(true);
-//			}
-//		}
+	    // 권한이 있는 경우 접근 허용
+	    for(Map<String, Object> pageAuthority : pageAuthorityMap) {
+	        String pageUrl = (String) pageAuthority.get("page_url");
+	        if(requestedUrl.contains(pageUrl)) {
+	    		System.out.print("=============AuthorizationDecision Success=============");
+	            return new AuthorizationDecision(true);
+	        }
+	    }
 		
 		// 권한이 없으면 접근 거부
+	    System.out.print("=============AuthorizationDecision False=============");
 		return decision = new AuthorizationDecision(false);
 	}
-	
-	private Set<String> getUrlRoles(String requestedUrl, String requestedMethod) {
-	    Set<String> urlRoles = new HashSet<>();
-	    
-	    // requestedUrl과 requestedMethod에 기반하여 디비에서 권한 정보를 가져와서 urlRoles에 추가하는 로직
-	    if (requestedUrl.equals("/admin") && requestedMethod.equals("GET")) {
-	        urlRoles.add("ADMIN_ROLE");
-	    } else if (requestedUrl.equals("/user") && requestedMethod.equals("GET")) {
-	        urlRoles.add("USER_ROLE");
-	    }
-	    
-	    return urlRoles;
-	}
-
 }
