@@ -51,17 +51,16 @@ public class MyAuthorizationManager implements AuthorizationManager<RequestAutho
 		    resultMap.put("req_method", userDto.getReq_method());
 		    pageAuthorityMap.add(resultMap);
 		}
-		System.out.print("AuthorizationDecision user pageAuthorityMap " + pageAuthorityMap);
 		
 		// 요청한 URL의 접근 권한 가져오기
 		String requestedUrl = object.getRequest().getRequestURI();
 		String requestedMethod = object.getRequest().getMethod();
-		System.out.print("AuthorizationDecision requestedUrl " + requestedUrl);
-		System.out.print("AuthorizationDecision requestedMethod " + requestedMethod);
 		
 	    // 권한이 있는 경우 접근 허용
 	    for(Map<String, Object> pageAuthority : pageAuthorityMap) {
 	        String pageUrl = (String) pageAuthority.get("page_url");
+    		System.out.print("requestedUrl = " + requestedUrl);
+    		System.out.print("pageUrl = " + pageUrl);
 	        if(requestedUrl.contains(pageUrl)) {
 	    		System.out.print("=============AuthorizationDecision Success=============");
 	            return new AuthorizationDecision(true);

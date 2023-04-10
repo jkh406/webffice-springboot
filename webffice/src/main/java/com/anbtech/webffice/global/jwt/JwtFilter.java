@@ -80,7 +80,6 @@ public class JwtFilter extends GenericFilterBean{
         if (requestURI.equals("/api/v1/token/getAccessToken")) {
             useToken = jwtTokenProvider.resolveToken(refreshToken);
             log.info("refreshToken ="+ refreshToken);
-            log.info("useToken ="+ useToken);
             try {
                 if (StringUtils.hasText(refreshToken) && jwtTokenProvider.validateToken(useToken)){
                     filterChain.doFilter(request, response);
@@ -91,15 +90,10 @@ public class JwtFilter extends GenericFilterBean{
             }
         }
         else {
-        	logger.debug("useToken = ", httpServletRequest.getHeader("Authorization"));
             useToken = jwtTokenProvider.resolveToken(httpServletRequest.getHeader("Authorization"));
-            logger.debug("useToken", StringUtils.hasText(useToken));
-            logger.debug("useToken2", useToken);
         }
 
         try {
-        	logger.debug("token1", StringUtils.hasText(useToken));
-        	logger.debug("token2", jwtTokenProvider.validateToken(useToken));
             if (StringUtils.hasText(useToken) && jwtTokenProvider.validateToken(useToken)) {
                 Authentication authentication = jwtTokenProvider.getAuthentication(useToken);
                 

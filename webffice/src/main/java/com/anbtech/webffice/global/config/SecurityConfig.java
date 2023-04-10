@@ -60,6 +60,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests() //요청 URL에 따라 접근 권한을 설정
         	.requestMatchers("/api/v1/login").permitAll()
         	.requestMatchers("/api/v1/logout").permitAll()
+        	.requestMatchers("/api/v1/token/getAccessToken").permitAll()
         	.requestMatchers("/404").permitAll()
         	.requestMatchers("/error").permitAll()
     		.anyRequest().access(myAuthorizationManager());
