@@ -131,9 +131,7 @@ public class JwtTokenProvider implements InitializingBean{
      */
     public boolean validateToken(String token) {
         // try {
-        	logger.info("token validateToken = " + token);
             Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            logger.info("claims" + claims);
             return !claims.getBody().getExpiration().before(new Date());
      }
     

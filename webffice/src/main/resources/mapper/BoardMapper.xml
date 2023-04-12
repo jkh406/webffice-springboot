@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.anbtech.webffice.domain.board.BoardMapper">
+    <insert id="createBoard" parameterType="com.anbtech.webffice.domain.board.BoardDTO">
+        insert into board_TB (writter, title, content, hits, create_date, update_date)
+        VALUES((select user_pk from user_tb where user_id = #{boardWritter}), #{boardTitle}, #{boardContent}, #{boardHits}, #{createDate}, #{updateDate})
+    </insert>
+
+    <select id="readBoardTitles" parameterType="com.anbtech.webffice.domain.board.BoardRequestDTO" resultType="Map">
+      select user.user_id as writter, bo.title as title, bo.board_no as boardId, bo.create_date
+      from board_tb as bo 
+      inner join user_tb as user 
+      on bo.writter = user.user_id
+      ORDER BY bo.create_date DESC
+      LIMIT #{startPage}, #{pageNum}
+    </select>
+
+    <select id="getBoardListLimit" resultType="int">
+      select count(*) from board_tb
+    </select>
+
+    <select id="getBoard" resultType="com.anbtech.webffice.domain.board.BoardDTO">
+      select (select user_Id from user_tb where user_id = b.writter) as boardWritter, b.title as boardTitle, b.content as boardContent 
+      from board_tb as b
+      where board_Pk = #{boardId}
+    </select>
+
+    
+</mapper>

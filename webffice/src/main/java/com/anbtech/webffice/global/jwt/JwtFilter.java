@@ -69,7 +69,6 @@ public class JwtFilter extends GenericFilterBean{
         Cookie[] cookies = httpServletRequest.getCookies();
         String refreshToken = null;
         String useToken = null;
-        log.info("cookies ="+ cookies);
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals(HttpHeaders.SET_COOKIE)) {
                 refreshToken = cookie.getValue();
@@ -79,7 +78,6 @@ public class JwtFilter extends GenericFilterBean{
         
         if (requestURI.equals("/api/v1/token/getAccessToken")) {
             useToken = jwtTokenProvider.resolveToken(refreshToken);
-            log.info("refreshToken ="+ refreshToken);
             try {
                 if (StringUtils.hasText(refreshToken) && jwtTokenProvider.validateToken(useToken)){
                     filterChain.doFilter(request, response);
@@ -94,6 +92,7 @@ public class JwtFilter extends GenericFilterBean{
         }
 
         try {
+            log.info("useToken ="+ useToken);
             if (StringUtils.hasText(useToken) && jwtTokenProvider.validateToken(useToken)) {
                 Authentication authentication = jwtTokenProvider.getAuthentication(useToken);
                 
