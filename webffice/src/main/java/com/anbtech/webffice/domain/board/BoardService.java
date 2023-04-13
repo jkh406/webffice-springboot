@@ -43,8 +43,8 @@ public class BoardService {
         return boardMapper.readBoardTitles(boardRequestDTO);
     }
 
-    public int getBoardListLimit() {
-        return boardMapper.getBoardListLimit();
+    public int getBoardListLimit(BoardRequestDTO boardRequestDTO) {
+        return boardMapper.getBoardListLimit(boardRequestDTO);
     }
 
     public BoardDTO getBoard(int boardId) {

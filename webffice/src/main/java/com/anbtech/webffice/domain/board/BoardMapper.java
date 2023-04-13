@@ -8,6 +8,6 @@ import org.apache.ibatis.annotations.Mapper;
 public interface BoardMapper {
     void createBoard(BoardDTO boardDTO);
     List<BoardDTO> readBoardTitles(BoardRequestDTO boardRequestDTO);
-    int getBoardListLimit();
+    int getBoardListLimit(BoardRequestDTO boardRequestDTO);
     BoardDTO getBoard(int boardId);
 }

@@ -1,4 +1,6 @@
 package com.anbtech.webffice.domain.board;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,5 +15,7 @@ import lombok.Setter;
 public class BoardRequestDTO {
     int startPage;
     int pageNum;
-    int boardId;
+    String searchText;
+    String sortOrder;
+    int board_Id;
 }

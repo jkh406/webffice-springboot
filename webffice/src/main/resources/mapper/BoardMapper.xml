@@ -5,27 +5,45 @@
  
 <mapper namespace="com.anbtech.webffice.domain.board.BoardMapper">
     <insert id="createBoard" parameterType="com.anbtech.webffice.domain.board.BoardDTO">
+    	INSERT INTO SYS.COM_BOARD_M
+		(BOARD_NO, MGMT_COMPANY_NO, BOARD_TYPE_CD, BOARD_TITLE_VAL, BOARD_CONTENT_VAL, PARENT_BOARD_NO, ROOT_BOARD_NO, ROOT_ORDER_VAL, ROOT_DEPTH_VAL, VIEW_CNT, LIKE_CNT, DISLIKE_CNT, COMMENT_CNT, USE_YN, REG_TM, REG_USER_NO, UPT_TM, UPT_USER_NO)
+		VALUES(nextval(SYS.seq_no), 'ANB', 'NOTICE', #{boardTitle}, #{boardContent}, NULL, '1', NULL, NULL, 1, 1, 1, NULL, 'Y', DATE_FORMAT(NOW(), '%Y%m%d%h%i%s'), #{boardWritter}, DATE_FORMAT(NOW(), '%Y%m%d%h%i%s'), #{boardWritter});
+		
         insert into board_TB (writter, title, content, hits, create_date, update_date)
         VALUES((select user_pk from user_tb where user_id = #{boardWritter}), #{boardTitle}, #{boardContent}, #{boardHits}, #{createDate}, #{updateDate})
     </insert>
 
     <select id="readBoardTitles" parameterType="com.anbtech.webffice.domain.board.BoardRequestDTO" resultType="Map">
-      select user.user_id as writter, bo.title as title, bo.board_no as boardId, bo.create_date
-      from board_tb as bo 
-      inner join user_tb as user 
-      on bo.writter = user.user_id
-      ORDER BY bo.create_date DESC
-      LIMIT #{startPage}, #{pageNum}
+      SELECT USER.USER_NAME AS USER_NAME,BO.BOARD_TYPE_CD AS BOARD_TYPE, BO.BOARD_TITLE_VAL AS BOARD_TITLE, BO.BOARD_NO, BO.VIEW_CNT, BO.REG_TM, USER.AVATAR
+        FROM SYS.COM_BOARD_M AS BO 
+       INNER JOIN SYS.USER_TB AS USER 
+          ON BO.REG_USER_NO = USER.USER_ID
+       WHERE 1 = 1
+       <if test="searchText != null and searchText != ''">
+         AND BO.BOARD_TITLE_VAL LIKE CONCAT('%',${searchText},'%')
+       </if>
+          ORDER BY BO.REG_TM  ${sortOrder}
+       <if test="searchText == null or searchText == ''">
+          LIMIT #{startPage}, #{pageNum}
+       </if>
     </select>
 
-    <select id="getBoardListLimit" resultType="int">
-      select count(*) from board_tb
+    <select id="getBoardListLimit" parameterType="com.anbtech.webffice.domain.board.BoardRequestDTO" resultType="int">
+      SELECT COUNT(*) 
+        FROM sys.com_board_m
+       WHERE 1 = 1
+       <if test="searchText != null and searchText != ''">
+         AND BOARD_TITLE_VAL LIKE CONCAT('%',${searchText},'%')
+       </if>
+       <if test="searchText == null or searchText == ''">
+          LIMIT #{startPage}, #{pageNum}
+       </if>
     </select>
 
     <select id="getBoard" resultType="com.anbtech.webffice.domain.board.BoardDTO">
-      select (select user_Id from user_tb where user_id = b.writter) as boardWritter, b.title as boardTitle, b.content as boardContent 
-      from board_tb as b
-      where board_Pk = #{boardId}
+      SELECT (SELECT USER_ID FROM USER_TB WHERE USER_ID = B.REG_USER_NO) AS BOARD_WRITTER, B.BOARD_TITLE_VAL AS BOARD_TITLE, B.BOARD_CONTENT_VAL AS BOARD_CONTENT 
+        FROM SYS.COM_BOARD_M AS B
+       WHERE BOARD_NO = #{boardId}
     </select>
 
     
