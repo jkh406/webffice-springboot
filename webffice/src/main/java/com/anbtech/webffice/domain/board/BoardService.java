@@ -3,6 +3,8 @@ package com.anbtech.webffice.domain.board;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import com.anbtech.webffice.domain.schedule.ScheduleVO;
 import com.anbtech.webffice.global.jwt.JwtTokenProvider;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,22 +24,45 @@ public class BoardService {
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:sss");
     Date time = new Date();
     String localTime = format.format(time);
+    
+    public List<BoardVO> getColumns(String id){ 
+    	return boardMapper.getColumns(id); 
+	}
 
     public boolean createBoardService(BoardDTO boardDTO, String accessToken) {
         String token = tokenProvider.resolveToken(accessToken);
         String userId = tokenProvider.getUserId(token);
 
         BoardDTO board = BoardDTO.builder()
-                        .boardWritter(userId)
-                        .boardContent(boardDTO.getBoardContent())
-                        .boardTitle(boardDTO.getBoardTitle()) 
-                        .boardHits(1)
+                        .writter(userId)
+                        .contents(boardDTO.getContents())
+                        .title(boardDTO.getTitle()) 
                         .createDate(localTime)
                         .updateDate(localTime).build();
 
         boardMapper.createBoard(board);
         return true;
     }
+
+    public void deleteBoard(String id){
+    	boardMapper.deleteBoard(id);
+	}
+    
+    public boolean updateBoard(BoardDTO boardDTO, String accessToken){
+        String token = tokenProvider.resolveToken(accessToken);
+        String userId = tokenProvider.getUserId(token);
+        
+        BoardDTO board = BoardDTO.builder()
+                .writter(userId)
+                .board_no(boardDTO.getBoard_no())
+                .contents(boardDTO.getContents())
+                .title(boardDTO.getTitle()) 
+                .createDate(localTime)
+                .updateDate(localTime).build();
+        
+    	boardMapper.updateBoard(board);
+        return true;
+	}
 
     public List<BoardDTO> readBoardLists(BoardRequestDTO boardRequestDTO) {
         return boardMapper.readBoardTitles(boardRequestDTO);

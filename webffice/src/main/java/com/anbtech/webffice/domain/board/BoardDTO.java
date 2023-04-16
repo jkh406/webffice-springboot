@@ -12,10 +12,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BoardDTO {
-    private String boardWritter;
-    private String boardTitle;
-    private String boardContent;
-    private int boardHits;
+    private String writter;
+    private String title;
+    private String contents;
+    private String board_no;
     private String createDate;
     private String updateDate;
 }

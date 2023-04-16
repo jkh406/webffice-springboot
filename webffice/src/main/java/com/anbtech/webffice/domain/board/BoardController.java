@@ -7,7 +7,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,8 +33,13 @@ public class BoardController {
     ResponseService responseService;
     @Autowired
     BoardService boardService;
+    
+    @GetMapping("/{id}")
+    public List<BoardVO> getColumns(@PathVariable String id){ 
+    	return boardService.getColumns(id);
+	}
 
-    @PostMapping("/create")
+    @PostMapping("/createBoard")
     public ResponseEntity<SingleDataResponse<Boolean>> createBoard(
             @RequestBody BoardDTO boardDTO,
             @RequestHeader("Authorization") String accessToken) {
@@ -55,6 +64,22 @@ public class BoardController {
         MapDataResponse<Object> response = responseService.getMapDataResponse(true, "Success", data);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public void deleteBoard(@PathVariable String id) {
+    	boardService.deleteBoard(id);
+    }
+    
+    @PostMapping("/updateBoard")
+    public ResponseEntity<SingleDataResponse<Boolean>> updateBoard(
+            @RequestBody BoardDTO boardDTO,
+            @RequestHeader("Authorization") String accessToken) {
+
+        boolean isEnd = boardService.updateBoard(boardDTO, accessToken);
+        SingleDataResponse<Boolean> response = responseService.getSingleDataResponse(true, "게시판 수정 성공", isEnd);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
 //    @PostMapping("/getBoardListLimit")
