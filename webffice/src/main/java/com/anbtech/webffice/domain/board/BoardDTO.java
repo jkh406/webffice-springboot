@@ -18,4 +18,5 @@ public class BoardDTO {
     private String board_no;
     private String createDate;
     private String updateDate;
+    private String root_board_no;
 }

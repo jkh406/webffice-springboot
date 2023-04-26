@@ -29,7 +29,7 @@ public class BoardService {
     	return boardMapper.getColumns(id); 
 	}
 
-    public boolean createBoardService(BoardDTO boardDTO, String accessToken) {
+    public boolean createBoard(BoardDTO boardDTO, String accessToken) {
         String token = tokenProvider.resolveToken(accessToken);
         String userId = tokenProvider.getUserId(token);
 
@@ -41,6 +41,22 @@ public class BoardService {
                         .updateDate(localTime).build();
 
         boardMapper.createBoard(board);
+        return true;
+    }
+    
+    public boolean createComments(BoardDTO boardDTO, String accessToken) {
+        String token = tokenProvider.resolveToken(accessToken);
+        String userId = tokenProvider.getUserId(token);
+
+        BoardDTO board = BoardDTO.builder()
+                        .writter(userId)
+                        .root_board_no(boardDTO.getRoot_board_no())
+                        .contents(boardDTO.getContents())
+                        .title(boardDTO.getTitle()) 
+                        .createDate(localTime)
+                        .updateDate(localTime).build();
+
+        boardMapper.createComments(board);
         return true;
     }
 
@@ -66,6 +82,10 @@ public class BoardService {
 
     public List<BoardDTO> readBoardLists(BoardRequestDTO boardRequestDTO) {
         return boardMapper.readBoardTitles(boardRequestDTO);
+    }
+    
+    public List<BoardDTO> getBoardComments(BoardRequestDTO boardRequestDTO) {
+        return boardMapper.getBoardComments(boardRequestDTO);
     }
 
     public int getBoardListLimit(BoardRequestDTO boardRequestDTO) {

@@ -17,5 +17,6 @@ public class BoardRequestDTO {
     int pageNum;
     String searchText;
     String sortOrder;
+    String root_board_no;
     int board_Id;
 }

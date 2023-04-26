@@ -14,8 +14,88 @@
     
     <insert id="createBoard" parameterType="com.anbtech.webffice.domain.board.BoardDTO">
     	INSERT INTO SYS.COM_BOARD_M
-		(BOARD_NO, MGMT_COMPANY_NO, BOARD_TYPE_CD, BOARD_TITLE_VAL, BOARD_CONTENT_VAL, PARENT_BOARD_NO, ROOT_BOARD_NO, ROOT_PATH_VAL, ROOT_DEPTH_VAL, VIEW_CNT, LIKE_CNT, DISLIKE_CNT, COMMENT_CNT, USE_YN, REG_TM, REG_USER_NO, UPT_TM, UPT_USER_NO)
-		VALUES(nextval(SYS.seq_no), 'ANB', 'NOTICE', #{title}, #{contents}, NULL, '1', 1, 1, 1, 1, 1, NULL, 'Y', DATE_FORMAT(NOW(), '%Y%m%d%h%i%s'), #{writter}, DATE_FORMAT(NOW(), '%Y%m%d%h%i%s'), #{writter});
+		(BOARD_NO
+		, MGMT_COMPANY_NO
+		, BOARD_TYPE_CD
+		, BOARD_TITLE_VAL
+		, BOARD_CONTENT_VAL
+		, PARENT_BOARD_NO
+		, ROOT_BOARD_NO
+		, ROOT_PATH_VAL
+		, ROOT_DEPTH_VAL
+		, VIEW_CNT
+		, LIKE_CNT
+		, DISLIKE_CNT
+		, COMMENT_CNT
+		, USE_YN
+		, REG_TM
+		, REG_USER_NO
+		, UPT_TM
+		, UPT_USER_NO)
+		VALUES(
+		nextval(SYS.seq_no)
+		, 'ANB'
+		, 'NOTICE'
+		, #{title}
+		, #{contents}
+		, NULL
+		, '1'
+		, 1
+		, 0
+		, 1
+		, 1
+		, 1
+		, NULL
+		, 'Y'
+		, DATE_FORMAT(NOW()
+		, '%Y%m%d%H%i%s')
+		, #{writter}
+		, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		, #{writter});
+    </insert>
+    
+    <insert id="createComments" parameterType="com.anbtech.webffice.domain.board.BoardDTO">
+    <![CDATA[
+    	    	INSERT INTO SYS.COM_BOARD_M
+		(BOARD_NO
+		, MGMT_COMPANY_NO
+		, BOARD_TYPE_CD
+		, BOARD_TITLE_VAL
+		, BOARD_CONTENT_VAL
+		, PARENT_BOARD_NO
+		, ROOT_BOARD_NO
+		, ROOT_PATH_VAL
+		, ROOT_DEPTH_VAL
+		, VIEW_CNT
+		, LIKE_CNT
+		, DISLIKE_CNT
+		, COMMENT_CNT
+		, USE_YN
+		, REG_TM
+		, REG_USER_NO
+		, UPT_TM
+		, UPT_USER_NO)
+		VALUES(
+		nextval(SYS.seq_no)
+		, 'ANB'
+		, 'NOTICE'
+		, #{title}
+		, #{contents}
+		, NULL
+		, #{root_board_no}
+		, CONCAT(#{root_board_no}, '\|', nextval(SYS.seq_no))
+		, 1
+		, 1
+		, 1
+		, 1
+		, NULL
+		, 'Y'
+		, DATE_FORMAT(NOW()
+		, '%Y%m%d%H%i%s')
+		, #{writter}
+		, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+		, #{writter});
+		]]>
     </insert>
     
     <delete id="deleteBoard" parameterType= "String">
@@ -37,11 +117,23 @@
        INNER JOIN SYS.USER_TB AS USER 
           ON BO.REG_USER_NO = USER.USER_ID
        WHERE 1 = 1
+         AND BO.ROOT_DEPTH_VAL = 0
        <if test="searchText != null and searchText != ''">
          AND BO.BOARD_TITLE_VAL LIKE CONCAT('%${searchText}%')
        </if>
           ORDER BY BO.REG_TM  ${sortOrder}
           LIMIT #{startPage}, #{pageNum}
+    </select>
+    
+    <select id="getBoardComments" parameterType= "com.anbtech.webffice.domain.board.BoardDTO" resultType="Map">
+    	SELECT BO.BOARD_NO, USER.USER_NAME AS USER_NAME,BO.BOARD_TYPE_CD AS BOARD_TYPE, BO.BOARD_TITLE_VAL AS BOARD_TITLE,BO.BOARD_CONTENT_VAL AS BOARD_CONTENT, BO.VIEW_CNT, BO.REG_TM, USER.AVATAR
+    	  FROM SYS.COM_BOARD_M AS BO
+         INNER JOIN SYS.USER_TB AS USER 
+            ON BO.REG_USER_NO = USER.USER_ID
+    	 WHERE 1 = 1
+           AND BO.ROOT_DEPTH_VAL != 0
+    	   AND BO.ROOT_BOARD_NO = #{root_board_no}
+    	   
     </select>
 
     <select id="getBoardListLimit" parameterType="com.anbtech.webffice.domain.board.BoardRequestDTO" resultType="int">
